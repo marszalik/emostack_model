@@ -11,3 +11,7 @@ run = ["sh", "-c", "poetry run python main.py"]
 [[ports]]
 localPort = 7860
 externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080

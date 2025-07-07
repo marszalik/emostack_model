@@ -1,6 +1,6 @@
 from infrastructure.DbSrv import DbSrv
 from sqlalchemy import text
-from Singleton import Singleton
+from services.Singleton import Singleton
 
 
 @Singleton

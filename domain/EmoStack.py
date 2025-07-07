@@ -1,43 +1,34 @@
 from domain.EmoThought import EmoThought
 from infrastructure.EmoThougthsRepo import EmoThoughtsRepo
-from Singleton import Singleton
+from services.Singleton import Singleton
 
 
 @Singleton
 class EmoStack:
-   _instance = None
 
    def __init__(self):
 
       self.stack = []
-      self.prompt = ""
 
-   def reload(self):
-      self.loadEmoThoughts()
-      self.prompt = self.promptFormat()
-      return self
-
-   def addEmoThought(self, emoThought):
+   def addEmoThought(self, emoThought: EmoThought):
       self.stack.append(emoThought)
-
-   def createEmoThought(self):
-      return EmoThought()
 
    # load the stack from the database
    def loadEmoThoughts(self):
+
       # zero the stack
       self.stack = []
+
       # load the stack from the database
-      EmoThoughtsRepo().getEmoThoughts(self.addEmoThought,
-                                       self.createEmoThought)
+      EmoThoughtsRepo().getEmoThoughts(self.addEmoThought, EmoThought)
 
    def show(self):
       for emoThought in self.stack:
          print(emoThought)
 
-   def promptFormat(self):
+   def getFormated(self):
       prompt = ""
       for emoThought in self.stack:
-         prompt += emoThought.promptFormat()
+         prompt += emoThought.getFormated()
          prompt += "\n\n---\n\n"
       return prompt

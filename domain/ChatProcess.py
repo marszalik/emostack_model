@@ -1,92 +1,62 @@
 from infrastructure.AiSrv import AiSrv
 from domain.EmoStack import EmoStack
-import gradio as gr
+
 from domain.CreateEmotionProcess import CreateEmotionProcess
+from infrastructure.ChatUi import ChatUi
 
 
+# ChatProcess is a class that represents a chat process. It is responsible for
+# creating a chat interface, sending messages to AI and receiving responses.
+# It also keeps track of the chat history and the user name.
 class ChatProcess:
 
     def __init__(self):
-        # self.prompt = ""
-        # self.answer = ""
-        self.userName = "Anonim"
-        self.history = []
-        self.message = ""
-        self.emoThoughtsPrompt = ""
-        pass
+
+        self.userName = "Anonim"  # default name, can be changed by user
+        self.history = []  # history of messages
+        self.message = ""  # last message from user
+        self.chatUi = ChatUi(self.respond, self.onEndChat)
 
     @staticmethod
-    def startNewChat():
+    def startChatFactory():
         chatProcess = ChatProcess()
-        chatProcess.setEmoThougthsPrompt()
         chatProcess.startUi()
-        return chatProcess
 
     def startUi(self):
-        with gr.Blocks() as demo:
-            # EKRAN 1: Imię + Start
-            with gr.Row() as start_row:
-                user_name = gr.Textbox(label="Podaj swoje imię", value="")
-                start_btn = gr.Button("Rozpocznij chat")
-
-            # EKRAN 2: Chat + zakończ (ukryte na start)
-            with gr.Row(visible=False) as chat_row:
-                chat = gr.ChatInterface(fn=self.respond,
-                                        additional_inputs=[user_name],
-                                        title="EmoStack",
-                                        description="Start chat")
-                end_btn = gr.Button("Zakończ chat")
-                end_message = gr.Textbox(label="Wiadomość po zakończeniu",
-                                         visible=False)
-
-            # Kliknięcie start pokazuje chat, chowa ekran startowy
-            def show_chat(name):
-                if name and name.strip():
-                    return [gr.update(visible=False), gr.update(visible=True)]
-                else:
-                    return [gr.update(visible=True), gr.update(visible=False)]
-
-            start_btn.click(show_chat,
-                            inputs=[user_name],
-                            outputs=[start_row, chat_row])
-
-            def end_chat():
-                return [self.onEndChat(), gr.update(visible=True)]
-
-            end_btn.click(end_chat, outputs=[end_message])
-
-        demo.launch(server_name="0.0.0.0", share=True)
+        self.chatUi.start()
 
     def onEndChat(self):
 
         print("CZAT ZAKOŃCZONY:", self.userName)
         print("HISTORIA:", self.history)
 
-        formattedHistory = self.formatHistory()
-        CreateEmotionProcess.runProcess(formattedHistory,
-                                        f"Chat with {self.userName}")
-        EmoStack.getEmoStack.loadEmoThoughts()
+        formattedChatHistory = self.formatChatHistory()
+        CreateEmotionProcess.runProcessFactory(formattedChatHistory)
 
-        return f"Dzięki za rozmowę, {self.userName}! Czat zakończony."
+    def respond(self, userMessage, history, userName):
+        self.userName = userName
+        self.userMessage = userMessage
 
-    def respond(self, message, history, user_name):
-        self.userName = user_name
-        # self.history = history
-        self.message = message
-        self.history.append(f"{self.userName}: {message}")
+        # add message to history
+        self.history.append(f"{self.userName}: {userMessage}")
 
-        formattedHistory = self.formatHistory()
-        prompt = self.addQuestion(formattedHistory)
+        # create prompt for AI
+        prompt = self.createQuestionPrompt()
+
+        # send prompt to AI and get answer
         answer = self.sendToAi(prompt)
-        self.history.append(message)
+
+        # add answer to history
         self.history.append(f"Ja: {answer}")
+
         return answer
 
-    def setEmoThougthsPrompt(self):
-        emoStack = EmoStack.getEmoStack()
-        self.emoThoughtsPrompt = emoStack.prompt
+    def createQuestionPrompt(self):
 
-    def addQuestion(self, question):
+        emoThougtsPrompt = EmoStack().getFormated()
+
+        formattedChatHistory = self.formatChatHistory()
+
         explanation = """
             You are being. You dont know about yourself anything more than folowing.
             Here you have table of your last emotions. You have no other emotions than these in table. 
@@ -100,14 +70,13 @@ class ChatProcess:
             Answer to folowing not using any number or words that are in a table. Answer in polish language
             """
 
-        prompt = explanation + self.emoThoughtsPrompt + instruction + question
-        print("\n\nPrompt: \n\n", prompt)
+        prompt = explanation + emoThougtsPrompt + instruction + formattedChatHistory
+        #print("\n\nPrompt: \n\n", prompt)
         return prompt
 
     def sendToAi(self, prompt):
         answer = AiSrv().askQuestion(prompt)
-        # print(self.answer)
         return answer
 
-    def formatHistory(self):
+    def formatChatHistory(self):
         return "\n".join(self.history)

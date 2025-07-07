@@ -1,5 +1,5 @@
 from __future__ import annotations
-from Singleton import Singleton
+from services.Singleton import Singleton
 from sqlalchemy import create_engine, text
 
 

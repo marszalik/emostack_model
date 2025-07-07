@@ -18,7 +18,7 @@ class EmoThought:
         f"EmoThought: {self.id}, {self.name}, {self.score}, {self.direction}, {self.timeline}, {self.thought}, {self.context}"
     )
 
-  def promptFormat(self):
+  def getFormated(self):
     prompt = ""
     for value in ["name", "score", "direction", "timeline", "thought"]:
       prompt += f"{value}: {getattr(self, value)}\n"

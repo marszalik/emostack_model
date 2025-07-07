@@ -1,7 +1,9 @@
 from domain.EmoThought import EmoThought
-from DbSrv import DbSrv
+from infrastructure.EmoThougthsRepo import EmoThoughtsRepo
+from Singleton import Singleton
 
 
+@Singleton
 class EmoStack:
    _instance = None
 
@@ -10,41 +12,24 @@ class EmoStack:
       self.stack = []
       self.prompt = ""
 
-   @staticmethod
-   def getEmoStack():
-      if EmoStack._instance is None:
-         EmoStack._instance = EmoStack()
-         es = EmoStack._instance
-         es.loadEmoThoughts()
-         es.prompt = es.promptFormat()
-
-      return EmoStack._instance
+   def reload(self):
+      self.loadEmoThoughts()
+      self.prompt = self.promptFormat()
+      return self
 
    def addEmoThought(self, emoThought):
       self.stack.append(emoThought)
 
+   def createEmoThought(self):
+      return EmoThought()
+
+   # load the stack from the database
    def loadEmoThoughts(self):
-      db = DbSrv()
-
-      results = db.conn().execute(db.query("select * from emo_thoughts"))
-      data = results.mappings().all()
-
+      # zero the stack
       self.stack = []
-      for row in data:
-         emoThough = self.loadEmoThought(row)
-         self.stack.append(emoThough)
-
-   def loadEmoThought(self, rawEmoThought):
-      emoThought = EmoThought()
-      emoThought.id = rawEmoThought["id"]
-      emoThought.name = rawEmoThought["name"]
-      emoThought.score = rawEmoThought["score"]
-      emoThought.direction = rawEmoThought["direction"]
-      emoThought.timeline = rawEmoThought["timeline"]
-      emoThought.thought = rawEmoThought["thought"]
-      emoThought.context = rawEmoThought["context"]
-      emoThought.source = rawEmoThought["source"]
-      return emoThought
+      # load the stack from the database
+      EmoThoughtsRepo().getEmoThoughts(self.addEmoThought,
+                                       self.createEmoThought)
 
    def show(self):
       for emoThought in self.stack:

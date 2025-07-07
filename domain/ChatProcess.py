@@ -1,7 +1,8 @@
-from OpenAiSrv import OpenAiSrv
+from infrastructure.AiSrv import AiSrv
 from domain.EmoStack import EmoStack
 import gradio as gr
 from domain.CreateEmotionProcess import CreateEmotionProcess
+
 
 class ChatProcess:
 
@@ -30,14 +31,13 @@ class ChatProcess:
 
             # EKRAN 2: Chat + zakończ (ukryte na start)
             with gr.Row(visible=False) as chat_row:
-                chat = gr.ChatInterface(
-                    fn=self.respond,
-                    additional_inputs=[user_name],
-                    title="EmoStack",
-                    description="Start chat"
-                )
+                chat = gr.ChatInterface(fn=self.respond,
+                                        additional_inputs=[user_name],
+                                        title="EmoStack",
+                                        description="Start chat")
                 end_btn = gr.Button("Zakończ chat")
-                end_message = gr.Textbox(label="Wiadomość po zakończeniu", visible=False)
+                end_message = gr.Textbox(label="Wiadomość po zakończeniu",
+                                         visible=False)
 
             # Kliknięcie start pokazuje chat, chowa ekran startowy
             def show_chat(name):
@@ -46,37 +46,30 @@ class ChatProcess:
                 else:
                     return [gr.update(visible=True), gr.update(visible=False)]
 
-            start_btn.click(
-                show_chat,
-                inputs=[user_name],
-                outputs=[start_row, chat_row]
-            )
+            start_btn.click(show_chat,
+                            inputs=[user_name],
+                            outputs=[start_row, chat_row])
 
             def end_chat():
                 return [self.onEndChat(), gr.update(visible=True)]
 
-            end_btn.click(
-                end_chat,
-                
-                outputs=[end_message]
-            )
+            end_btn.click(end_chat, outputs=[end_message])
 
         demo.launch(server_name="0.0.0.0", share=True)
 
     def onEndChat(self):
-        
+
         print("CZAT ZAKOŃCZONY:", self.userName)
         print("HISTORIA:", self.history)
-        
+
         formattedHistory = self.formatHistory()
-        CreateEmotionProcess.runProcess(formattedHistory, f"Chat with {self.userName}")
+        CreateEmotionProcess.runProcess(formattedHistory,
+                                        f"Chat with {self.userName}")
         EmoStack.getEmoStack.loadEmoThoughts()
 
-        
         return f"Dzięki za rozmowę, {self.userName}! Czat zakończony."
-    
 
-    def respond(self, message, history, user_name):  
+    def respond(self, message, history, user_name):
         self.userName = user_name
         # self.history = history
         self.message = message
@@ -108,16 +101,13 @@ class ChatProcess:
             """
 
         prompt = explanation + self.emoThoughtsPrompt + instruction + question
-        print("\n\nPrompt: \n\n",prompt)
+        print("\n\nPrompt: \n\n", prompt)
         return prompt
 
     def sendToAi(self, prompt):
-        answerEngine = OpenAiSrv()
-        answer = answerEngine.askQuestion(prompt)
+        answer = AiSrv().askQuestion(prompt)
         # print(self.answer)
         return answer
 
     def formatHistory(self):
         return "\n".join(self.history)
-    
-    

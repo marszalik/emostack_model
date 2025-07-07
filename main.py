@@ -1,12 +1,15 @@
-
 from domain.ChatProcess import ChatProcess
 from domain.EmoStack import EmoStack
 from domain.CreateEmotionProcess import CreateEmotionProcess
 
 print("Dzialam... ")
 
-es = EmoStack.getEmoStack()
+es = EmoStack().reload()
 print("emostack", es.prompt)
+
+#  a jak bym wolala?
+Emostack.getEmoStack().loadEmoThoughts()
+
 
 ChatProcess.startNewChat()
 

@@ -1,18 +1,18 @@
-from DbSrv import DbSrv
+from infrastructure.DbSrv import DbSrv
 from sqlalchemy import text
 
-class EmoThoughtsRepo:
+
+class EmoThoughtRepo:
 
     def __init__(self):
         self.db = DbSrv()
 
     def saveEmoThoguth(self, emoThought):
-        
 
         sql = text(
             "insert into emo_thoughts (name, thought, score, direction, context, timeline) "
             "values (:name, :thought, :score, :direction, :context, :timeline)"
-            )
+        )
 
         params = {
             "name": emoThought.name,

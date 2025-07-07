@@ -1,0 +1,13 @@
+modules = ["python-3.12"]
+run = "python main.py"
+
+[nix]
+channel = "stable-24_05"
+packages = ["ffmpeg-full"]
+
+[deployment]
+run = ["sh", "-c", "poetry run python main.py"]
+
+[[ports]]
+localPort = 7860
+externalPort = 80

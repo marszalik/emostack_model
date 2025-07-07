@@ -1,4 +1,4 @@
-from repository.EmoThougtsRepo import EmoThoughtsRepo
+from infrastructure.EmoThougtRepo import EmoThoughtRepo
 
 
 class EmoThought:
@@ -25,6 +25,6 @@ class EmoThought:
     return prompt
 
   def save(self):
-    repo = EmoThoughtsRepo()
+    repo = EmoThoughtRepo()
     repo.saveEmoThoguth(self)
     print("EmoThought saved")

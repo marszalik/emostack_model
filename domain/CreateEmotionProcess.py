@@ -1,9 +1,8 @@
-from datetime import date
-from DbSrv import DbSrv
-from OpenAiSrv import OpenAiSrv
+from infrastructure.AiSrv import AiSrv
 from domain.EmoThought import EmoThought
 from datetime import datetime, timezone
 import json
+
 
 class CreateEmotionProcess:
 
@@ -11,7 +10,7 @@ class CreateEmotionProcess:
     pass
 
   @staticmethod
-  def runProcess(context,source):
+  def runProcess(context, source):
     process = CreateEmotionProcess()
     prompt = process.createPrompt(context)
     print("prompt", prompt)
@@ -20,8 +19,8 @@ class CreateEmotionProcess:
     emoThought = process.createEmoThought(rawEmoThought, context, source)
     emoThought.save()
     return process
-    
-  def createEmoThought(self, rawEmoThought, context,source):
+
+  def createEmoThought(self, rawEmoThought, context, source):
     emoThought = EmoThought()
     emoThought.thought = rawEmoThought[0]
     emoThought.name = rawEmoThought[1]
@@ -30,25 +29,21 @@ class CreateEmotionProcess:
     emoThought.context = context
     emoThought.source = source
     emoThought.timeline = datetime.now(timezone.utc).isoformat()
-  
-    return emoThought  
 
-  
+    return emoThought
+
   def setInput(self, input):
     self.input = input
 
   def createPrompt(self, context):
-      prompt = """Answer in the first person perspective. What is the emotion based on folowing context and what is the intensity
+    prompt = """Answer in the first person perspective. What is the emotion based on folowing context and what is the intensity
       of the emotion in 1 to 100 scale and what is the direction (pleasnt:+, unpleasant:-). Create very short (1-2 sentence) summary of context you taking into consideration. 
       Answer using only json [context_summary, emotion_name, emotion_intensity, emotion_direction] 
       """ + context
-      return prompt
-      
+    return prompt
+
   def sendToAi(self, prompt):
-    answerEngine = OpenAiSrv()
-    answer = answerEngine.askQuestion(prompt)
+    answer = AiSrv().askQuestion(prompt)
 
     table = json.loads(answer)
     return table
-
-  

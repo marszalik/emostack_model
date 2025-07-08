@@ -3,6 +3,7 @@ from domain.EmoStack import EmoStack
 
 from domain.CreateEmotionProcess import CreateEmotionProcess
 from infrastructure.ChatUi import ChatUi
+from domain.EmoThoughtTrigger import EmoThoughtTrigger
 
 
 # ChatProcess is a class that represents a chat process. It is responsible for
@@ -31,11 +32,18 @@ class ChatProcess:
         print("HISTORIA:", self.history)
 
         formattedChatHistory = self.formatChatHistory()
-        CreateEmotionProcess.runProcessFactory(formattedChatHistory)
+        CreateEmotionProcess.runProcessFactory(formattedChatHistory, "Chat with " + self.userName)
 
     def respond(self, userMessage, history, userName):
         self.userName = userName
         self.userMessage = userMessage
+
+        trigger = EmoThoughtTrigger()
+        trigger.subject = f"{self.userName} just said: {userMessage}"
+        trigger.context = f"Chat history:\n{self.formatChatHistory()}" if self.history else "No previous messages."
+        trigger.source = "Chat with " + self.userName
+
+        CreateEmotionProcess.runProcessFactory(trigger)
 
         # add message to history
         self.history.append(f"{self.userName}: {userMessage}")

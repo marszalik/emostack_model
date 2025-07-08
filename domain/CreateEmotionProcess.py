@@ -1,48 +1,69 @@
 from domain.EmoStack import EmoStack
+from domain.EmoThoughtTrigger import EmoThoughtTrigger
 from infrastructure.AiSrv import AiSrv
 from domain.EmoThought import EmoThought
 from datetime import datetime, timezone
+from domain.EmoRules import EmoRules
 import json
-
 
 class CreateEmotionProcess:
 
   @staticmethod
-  def runProcessFactory(context):
+  def runProcessFactory(trigger : EmoThoughtTrigger):
 
     emotionProcess = CreateEmotionProcess()
 
-    prompt = emotionProcess.createPrompt(context)
+    prompt = emotionProcess.createPrompt(trigger)
 
     rawEmoThought = emotionProcess.sendToAi(prompt)
 
-    emoThought = emotionProcess.createEmoThought(rawEmoThought, context)
+    emoThought = emotionProcess.createEmoThought(rawEmoThought, trigger)
 
-    emoThought.save()
+    emoThought.show()
 
-    # add emoThought to emoStack
-    EmoStack().addEmoThought(emoThought)
+    emotionProcess.assessEmotionAndAdd(emoThought)
 
-  def createEmoThought(self, rawEmoThought, context):
+
+  def assessEmotionAndAdd(self, emoThought):
+    if EmoRules.isEmotionSignificant(emoThought):
+      EmoStack().addEmoThought(emoThought)
+
+
+  def createEmoThought(self, rawEmoThought, trigger: EmoThoughtTrigger):
     emoThought = EmoThought()
     emoThought.thought = rawEmoThought[0]
     emoThought.name = rawEmoThought[1]
     emoThought.score = rawEmoThought[2]
     emoThought.direction = rawEmoThought[3]
-    emoThought.context = context
-    emoThought.timeline = datetime.now(timezone.utc).isoformat()
+    emoThought.context = trigger.combined()
+    emoThought.source = trigger.source
+    emoThought.time = datetime.now(timezone.utc).isoformat()
 
     return emoThought
 
-  def setInput(self, input):
-    self.input = input
 
-  def createPrompt(self, context):
+  def createPrompt(self, trigger: EmoThoughtTrigger):
+    scoreTable = EmoRules.emotionScoreTable()
+
     prompt = """Answer in the first person perspective. What is the emotion based on folowing context and what is the intensity
       of the emotion in 1 to 100 scale and what is the direction (pleasnt:+, unpleasant:-). Create very short (1-2 sentence) summary of context you taking into consideration. 
       Answer using only json [context_summary, emotion_name, emotion_intensity, emotion_direction] 
-      """ + context
+
+      use score table to determine the intensity of the emotion:
+      """ + scoreTable + """
+
+      Subject to be considered:
+      """ + trigger.subject + """
+      
+      based on context: """ + trigger.context + """
+      
+      Source of subject and context: """ + trigger.source + """
+      """
+    # print("\n\nPrompt: \n\n", prompt)
     return prompt
+
+
+
 
   def sendToAi(self, prompt):
     answer = AiSrv().askQuestion(prompt)
@@ -60,6 +81,7 @@ class CreateEmotionProcess:
     table = json.loads(answer)
     return table
 
+  # Check if the answer is a valid JSON with 4 elements
   def isValidAnswer(self, answer):
     try:
       data = json.loads(answer)

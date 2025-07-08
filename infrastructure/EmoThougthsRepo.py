@@ -10,7 +10,7 @@ class EmoThoughtsRepo:
         self.db = DbSrv()
 
     def getEmoThoughts(self, addEmoThought, createEmoThought):
-        query = self.db.query("select * from emo_thoughts")
+        query = self.db.query("select * from emo_thoughts order by time asc")
         results = self.db.conn().execute(query)
         data = results.mappings().all()
 
@@ -24,7 +24,7 @@ class EmoThoughtsRepo:
         emoThought.name = rawEmoThought["name"]
         emoThought.score = rawEmoThought["score"]
         emoThought.direction = rawEmoThought["direction"]
-        emoThought.timeline = rawEmoThought["timeline"]
+        emoThought.time = rawEmoThought["time"]
         emoThought.thought = rawEmoThought["thought"]
         emoThought.context = rawEmoThought["context"]
         emoThought.source = rawEmoThought["source"]

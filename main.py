@@ -5,4 +5,6 @@ print("Working... ")
 
 EmoStack().loadEmoThoughts()
 
+EmoStack().show()
+
 ChatProcess.startChatFactory()

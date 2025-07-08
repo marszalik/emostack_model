@@ -42,17 +42,20 @@ class EmoThought:
     print("\n\t".join(toPrint))
     print("\t----------\n")
 
+  
   def getFormated(self):
     prompt = ""
     for value in ["name", "score", "direction", "time", "thought"]:
       prompt += f"{value}: {getattr(self, value)}\n"
     return prompt
 
+  
   def save(self):
     repo = EmoThoughtRepo()
     repo.saveEmoThoguth(self)
     print("EmoThought saved")
 
+  
   def getHoursPassed(self):
     try:
         now = datetime.now().astimezone()

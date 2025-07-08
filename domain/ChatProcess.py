@@ -31,15 +31,19 @@ class ChatProcess:
         print("CZAT ZAKOŃCZONY:", self.userName)
         print("HISTORIA:", self.history)
 
-        formattedChatHistory = self.formatChatHistory()
-        CreateEmotionProcess.runProcessFactory(formattedChatHistory, "Chat with " + self.userName)
+        trigger = EmoThoughtTrigger()
+        trigger.subject = f"Focus on whole below chat with {self.userName} that has just ended."
+        trigger.context = f"Chat history:\n{self.formatChatHistory()}" if self.history else "No previous messages."
+        trigger.source = "Chat with " + self.userName
+
+        CreateEmotionProcess.runProcessFactory(trigger)
 
     def respond(self, userMessage, history, userName):
         self.userName = userName
         self.userMessage = userMessage
 
         trigger = EmoThoughtTrigger()
-        trigger.subject = f"{self.userName} just said: {userMessage}"
+        trigger.subject = f"Focus only on what {self.userName} just said: {userMessage}"
         trigger.context = f"Chat history:\n{self.formatChatHistory()}" if self.history else "No previous messages."
         trigger.source = "Chat with " + self.userName
 

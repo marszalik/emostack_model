@@ -1,21 +1,24 @@
 [project]
-name = "emostack"
+name = "EmoStack"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "Eliza Marszalik"}
+    { name = "Eliza" }
 ]
-readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
-    "sqlalchemy (>=2.0.41,<3.0.0)",
-    "gradio (>=5.34.1,<6.0.0)",
-    "openai (>=1.88.0,<2.0.0)",
-    "sqlite-web (>=0.6.4,<0.7.0)",
-    "python-dotenv (>=1.1.0,<2.0.0)"
+    "sqlalchemy>=2.0.41,<3.0.0",
+    "gradio>=5.34.1,<6.0.0",
+    "openai>=1.88.0,<2.0.0",
+    "sqlite-web>=0.6.4,<0.7.0",
+    "python-dotenv>=1.1.0,<2.0.0",
+    "tabulate"
 ]
 
+[tool.pdm]
+# nic tu nie trzeba, venv konfigurujemy w .pdm.toml
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.pdm.scripts]
+start = { shell = "pdm install && python main.py" }
+main = "python main.py"
+db = "sqlite_web emostack.db"

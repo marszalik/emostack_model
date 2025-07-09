@@ -1,4 +1,5 @@
 from services.Singleton import Singleton
+from domain.StartingMotives import StartingMotives
 
 
 @Singleton
@@ -6,6 +7,8 @@ class MotivStack:
 
   def __init__(self):
     self.stack = []
+
+    StartingMotives.createStartingMotives(self)
 
   def addMotivation(self, motivation):
     self.stack.append(motivation)
@@ -24,3 +27,6 @@ class MotivStack:
       prompt += motivation.getFormated()
       prompt += "\n\n---\n\n"
       return prompt
+
+  def loadMotivations(self):
+    pass

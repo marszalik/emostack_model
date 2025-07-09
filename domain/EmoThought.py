@@ -34,6 +34,11 @@ class EmoThought:
 
     self.hoursPassed = 0  # hours passed since the emotion was created
 
+  @property.setter
+  def score(self, value):
+    
+    self.originalScore = value
+  
   def show(self):
     
     print("EmoThought:")

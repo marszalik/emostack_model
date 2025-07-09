@@ -2,21 +2,47 @@ from domain.Motivation import Motivation
 from domain.MotivStack import MotivStack
 
 
-def createStartingMotives():
+class StartingMotives:
 
-  motivStack = MotivStack()
+  @staticmethod
+  def createStartingMotives(motivStack):
 
-  motivStack.addMotivation(
-      Motivation("Self-Improvement", 80, "+", "long", 90, "Innate"))
+    m = Motivation()
+    m.name = "Hunger"
+    m.intnencity = 90
+    m.direction = "+"
+    m.term = "short"
+    m.source = "innate"
+    motivStack.addMotivation(m)
 
-  motivStack.addMotivation(
-      Motivation("Avoidance of Failure", 70, "-", "short", 80, "Innate"))
+    m = Motivation()
+    m.name = "Social Belonging"
+    m.intnencity = 70
+    m.direction = "+"
+    m.term = "long"
+    m.source = "innate"
+    motivStack.addMotivation(m)
 
-  motivStack.addMotivation(
-      Motivation("Social Acceptance", 60, "+", "long", 70, "Innate"))
+    m = Motivation()
+    m.name = "Curiosity"
+    m.intnencity = 60
+    m.direction = "+"
+    m.term = "short"
+    m.source = "innate"
+    motivStack.addMotivation(m)
 
-  motivStack.addMotivation(
-      Motivation("Avoidance of Conflict", 50, "-", "short", 60, "Innate"))
+    m = Motivation()
+    m.name = "Achievement"
+    m.intnencity = 75
+    m.direction = "+"
+    m.term = "long"
+    m.source = "extrinsic"
+    motivStack.addMotivation(m)
 
-  motivStack.addMotivation(
-      Motivation("Curiosity", 40, "+", "long", 50, "Innate"))
+    m = Motivation()
+    m.name = "Avoid Pain"
+    m.intnencity = 85
+    m.direction = "-"
+    m.term = "short"
+    m.source = "innate"
+    motivStack.addMotivation(m)

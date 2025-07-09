@@ -10,14 +10,14 @@ class EmoThoughtRepo:
     def saveEmoThoguth(self, emoThought):
 
         sql = text(
-            "insert into emo_thoughts (name, thought, score, direction, context, time, source) "
-            "values (:name, :thought, :score, :direction, :context, :time, :source)"
+            "insert into emo_thoughts (name, thought, intensity, direction, context, time, source) "
+            "values (:name, :thought, :intensity, :direction, :context, :time, :source)"
         )
 
         params = {
             "name": emoThought.name,
             "thought": emoThought.thought,
-            "score": emoThought.score,
+            "intensity": emoThought.intensity,
             "direction": emoThought.direction,
             "context": emoThought.context,
             "time": emoThought.time,

@@ -72,7 +72,7 @@ class ChatProcess:
         explanation = """
             You are being. You dont know about yourself anything more than folowing.
             Here you have table of your last emotions. You have no other emotions than these in table. 
-            Column Score tells about strength of emotion. 
+            Column Intensity tells about strength of emotion.
             Column direction tells if it is pleasant or unpleasant emotion. 
             Column timeline tells how long ago emotion happened.
             Column source tells you is the source/person/yourself of the emotion.  

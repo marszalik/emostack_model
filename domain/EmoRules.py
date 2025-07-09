@@ -7,12 +7,12 @@ class EmoRules:
     @staticmethod
     def isEmotionSignificant(emoThought):
         """
-        Assess the emotion score based on the EmoThought object.
+        Assess the emotion intensity based on the EmoThought object.
         Returns a boolean indicating significance.
         """
-        if emoThought.score > 30 and emoThought.direction == "+":
+        if emoThought.intensity > 30 and emoThought.direction == "+":
                 return True
-        elif emoThought.score > 20 and emoThought.direction == "-":
+        elif emoThought.intensity > 20 and emoThought.direction == "-":
                 return True
         else:
                 return False
@@ -46,22 +46,21 @@ class EmoRules:
         """
 
         fadeValue = 0.5  # default fade value for emotions
-        
+
         for emoThought in emoStack.stack:
-         emoThought.originalScore = emoThought.score  # save original score before fading
+         emoThought.originalIntensity = emoThought.intensity  # save original intensity before fading
         
          hours_passed = emoThought.getHoursPassed()
          if hours_passed < 1:
             decay_factor = 1.0  # świeże emocje — bez fadingu
          else:
             decay_factor = math.exp(-fadeValue * hours_passed)
-        
-         emoThought.score *= decay_factor
+
+         emoThought.intensity *= decay_factor
         
          print(
-             f"ID {emoThought.id}: {emoThought.originalScore:.2f} → {emoThought.score:.2f} (age: {hours_passed:.1f}h)"
+             f"ID {emoThought.id}: {emoThought.originalIntensity:.2f} → {emoThought.intensity:.2f} (age: {hours_passed:.1f}h)"
          )
         
-        # remove emotions with score below 1
-        emoStack.stack = [e for e in emoStack.stack if e.score >= 1]
-        
+        # remove emotions with intensity below 1
+        emoStack.stack = [e for e in emoStack.stack if e.intensity >= 1]        

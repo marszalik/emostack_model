@@ -19,8 +19,8 @@ class EmoStack:
       use each time the stack is changed to recount the stack
       """
 
-      # sort the stack by score in descending order
-      self.stack.sort(key=lambda x: x.score, reverse=True)
+      # sort the stack by intensity in descending order
+      self.stack.sort(key=lambda x: x.intensity, reverse=True)
 
       # fade emotions based on their age
       EmoRules.fadeEmotionsWithTime(self)

@@ -22,7 +22,7 @@ class EmoThoughtsRepo:
         emoThought = createEmoThought()
         emoThought.id = rawEmoThought["id"]
         emoThought.name = rawEmoThought["name"]
-        emoThought.score = rawEmoThought["score"]
+        emoThought.intensity = rawEmoThought["intensity"]
         emoThought.direction = rawEmoThought["direction"]
         emoThought.time = rawEmoThought["time"]
         emoThought.thought = rawEmoThought["thought"]

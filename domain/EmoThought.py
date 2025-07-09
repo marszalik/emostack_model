@@ -12,9 +12,9 @@ class EmoThought:
     self.name = "" 
 
     # intensity of the emotion in 1 to 100 scale
-    self.score = 0
+    self._intensity = 0
 
-    self.originalScore = 0  # original score before fading
+    self.originalIntensity = 0  # original intensity before fading
 
     # direction of the emotion, pleasant:+, unpleasant:-
     self.direction = ""
@@ -34,23 +34,31 @@ class EmoThought:
 
     self.hoursPassed = 0  # hours passed since the emotion was created
 
-  @property.setter
-  def score(self, value):
-    
-    self.originalScore = value
+  @property
+  def intensity(self):
+    return self._intensity
+
+  @intensity.setter
+  def intensity(self, value):
+    self._intensity = value
+    self.originalIntensity = value
   
   def show(self):
     
     print("EmoThought:")
-    
-    toPrint = [f"{value}: {getattr(self, value)}" for value in self.__dict__.keys()]
+
+    attrs = self.__dict__.copy()
+    if "_intensity" in attrs:
+      attrs["intensity"] = attrs.pop("_intensity")
+
+    toPrint = [f"{key}: {value}" for key, value in attrs.items()]
     print("\n\t".join(toPrint))
     print("\t----------\n")
 
   
   def getFormated(self):
     prompt = ""
-    for value in ["name", "score", "direction", "time", "thought"]:
+    for value in ["name", "intensity", "direction", "time", "thought"]:
       prompt += f"{value}: {getattr(self, value)}\n"
     return prompt
 

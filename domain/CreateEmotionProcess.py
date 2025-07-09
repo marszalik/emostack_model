@@ -33,7 +33,7 @@ class CreateEmotionProcess:
     emoThought = EmoThought()
     emoThought.thought = rawEmoThought[0]
     emoThought.name = rawEmoThought[1]
-    emoThought.score = rawEmoThought[2]
+    emoThought.intensity = rawEmoThought[2]
     emoThought.direction = rawEmoThought[3]
     emoThought.context = trigger.combined()
     emoThought.source = trigger.source

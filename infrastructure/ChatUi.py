@@ -7,7 +7,12 @@ class ChatUi:
         self.respond = respond
         self.onEndChat = onEndChat
 
+
     def start(self):
+        """
+        Starts the Gradio UI for the chat application.
+        """
+        
         with gr.Blocks() as demo:
             # EKRAN 1: Imię + Start
             with gr.Row() as start_row:

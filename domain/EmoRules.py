@@ -10,9 +10,9 @@ class EmoRules:
         Assess the emotion intensity based on the EmoThought object.
         Returns a boolean indicating significance.
         """
-        if emoThought.intensity > 30 and emoThought.direction == "+":
+        if emoThought.intensity > 59 and emoThought.direction == "+":
                 return True
-        elif emoThought.intensity > 20 and emoThought.direction == "-":
+        elif emoThought.intensity > 39 and emoThought.direction == "-":
                 return True
         else:
                 return False

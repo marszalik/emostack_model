@@ -70,6 +70,7 @@ class EmoThought:
 
   
   def getHoursPassed(self):
+    """Calculate hours passed since the emotion was created."""
     try:
         now = datetime.now().astimezone()
         if isinstance(self.time, str):
